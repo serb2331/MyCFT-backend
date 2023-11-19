@@ -4,23 +4,23 @@ from api import api_users
 
 users = flask.Blueprint('views/users', __name__, url_prefix = '/users')
 
-@users.route('/<string:id>', methods = ['POST'])
+@users.route('/<string:user_id>', methods = ['POST'])
 def post_user(user_id: str):
-    userJson = flask.request.get_json()
-    api_users.post_user(user_id, userJson)
+    user_data = flask.request.get_json()
+    api_users.post_user(user_id, user_data)
+    return "valid"
 
-@users.route('/<string:id>', methods = ['GET'])
+@users.route('/<string:user_id>', methods = ['GET'])
 def get_user(user_id: str):
-    returnValues = api_users.get_user(user_id)
-    print(returnValues)
-    print(json.dumps(returnValues))
-    return json.dumps(returnValues)
+    return api_users.get_user(user_id)
 
-@users.route('/<string:id>', methods = ['PUT'])
-def put_user(user_id: str, fuelType: str, fuelEfficiency: float):
-    userJson = flask.request.get_json()
-    api_users.put_user(user_id, userJson)
+@users.route('/<string:user_id>', methods = ['PUT'])
+def put_user(user_id: str):
+    user_data = flask.request.get_json()
+    api_users.put_user(user_id, user_data)
+    return "valid"
 
-@users.route('/<string:id>', methods = ['DELETE'])
+@users.route('/<string:user_id>', methods = ['DELETE'])
 def delete_user(user_id: str):
     api_users.delete_user(user_id)
+    return "valid"

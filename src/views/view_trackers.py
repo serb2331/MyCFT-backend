@@ -8,6 +8,7 @@ trackers = flask.Blueprint('views/trackers', __name__, url_prefix = '/trackers')
 def post_tracker(user_id: str):
     tracker_data = flask.request.get_json()
     api_trackers.post_tracker(user_id, tracker_data)
+    return "valid"
 
 @trackers.route('/<string:user_id>/<string:tracker_id>', methods = ['GET'])
 def get_tracker(user_id: str, tracker_id: str):
@@ -17,7 +18,9 @@ def get_tracker(user_id: str, tracker_id: str):
 def put_tracker(user_id: str, tracker_id: str):
     tracker_data = flask.request.get_json()
     api_trackers.put_tracker(user_id, tracker_id, tracker_data)
+    return "valid"
     
 @trackers.route('/<string:user_id>/<string:tracker_id>', methods = ['DELETE'])
 def delete_tracker(user_id: str, tracker_id: str):
     api_trackers.delete_tracker(user_id, tracker_id)
+    return "valid"

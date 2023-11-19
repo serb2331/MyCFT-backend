@@ -13,3 +13,6 @@ def put_tracker(user_id: str, tracker_id: str, tracker_data):
 
 def delete_tracker(user_id: str, tracker_id: str):
     return db_trackers.db_tracker_delete(_database, user_id, tracker_id)
+
+def get_all_tracker(user_id: str):
+    return db_trackers.db_tracker_get_all(_database, user_id)

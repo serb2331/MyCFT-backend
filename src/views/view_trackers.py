@@ -1,10 +1,23 @@
 import json
 import flask
-from db import db_trackers
+from api import api_trackers
 
 trackers = flask.Blueprint('views/trackers', __name__, url_prefix = '/trackers')
 
 @trackers.route('/<string:id>', methods = ['POST'])
 def post_tracker(user_id: str):
-    trackerJson = flask.request.get_json()
-    db_trackers.db_tracker_get()
+    tracker_data = flask.request.get_json()
+    api_trackers.post_tracker(user_id, tracker_data)
+
+@trackers.route('/<string:id>', methods = ['GET'])
+def get_tracker(user_id: str, tracker_id: str):
+    return api_trackers.get_tracker(user_id, tracker_id)
+    
+@trackers.route('/<string:id>', methods = ['PUT'])
+def put_tracker(user_id: str, tracker_id: str):
+    tracker_data = flask.request.get_json()
+    api_trackers.put_tracker(user_id, tracker_id, tracker_data)
+    
+@trackers.route('/<string:id>', methods = ['DELETE'])
+def delete_tracker(user_id: str, tracker_id: str):
+    api_trackers.delete_tracker(user_id, tracker_id)

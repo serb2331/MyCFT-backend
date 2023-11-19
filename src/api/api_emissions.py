@@ -11,8 +11,12 @@ def calculate_emissions_time_interval(user_id: str, start_date_s: str, end_date_
     for tracker in tracker_dict:
         print(start_date, Units.calcDateDay(tracker["start_date"]))
         print(end_date, Units.calcDateDay(tracker["end_date"]))
-        if (Units.calcDateDay(tracker["start_date"]) >= start_date) and (Units.calcDateDay(tracker["end_date"]) <= end_date):
-            print("yess")
+        print(tracker["emissions"])
+        if ((Units.calcDateDay(tracker["start_date"]) >= start_date) and (Units.calcDateDay(tracker["start_date"]) <= end_date) and 
+            (Units.calcDateDay(tracker["end_date"]) >= start_date) and (Units.calcDateDay(tracker["end_date"]) <= end_date)):
             total_emissions += tracker["emissions"]
-    
+        elif ((Units.calcDateDay(tracker["start_date"]) >= start_date) and (Units.calcDateDay(tracker["start_date"]) <= end_date)):
+            total_emissions += tracker["emissions"] * (end_date - Units.calcDateDay(tracker["start_date"])) / (Units.calcDateDay(tracker["end_date"]) - Units.calcDateDay(tracker["start_date"]))
+        elif ((Units.calcDateDay(tracker["end_date"]) >= start_date) and (Units.calcDateDay(tracker["end_date"]) <= end_date)):
+            total_emissions += tracker["emissions"] * (Units.calcDateDay(tracker["end_date"]) - start_date) / (Units.calcDateDay(tracker["end_date"]) - Units.calcDateDay(tracker["start_date"]))
     return str(total_emissions)

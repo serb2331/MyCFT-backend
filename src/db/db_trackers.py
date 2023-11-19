@@ -1,3 +1,5 @@
+from utils.units import Units
+from db import db_userdata
 
 empty_user_data = {'TrackerNumber': 0}
 
@@ -9,6 +11,7 @@ def db_tracker_get_all(db, user_id: str):
     for tracker in user_trackers.collection("Trackers").stream():
         return_array.append(tracker.to_dict())
     return return_array
+
 
 def db_tracker_get(db, user_id: str, tracker_id: str):
     user_trackers = db.collection("UserTrackers").document(user_id)
@@ -27,7 +30,15 @@ def db_tracker_set(db, user_id: str, tracker_id: str,  tracker_data):
     if not user_trackers.get().exists:
         return "User not in database"
     tracker = user_trackers.collection("Trackers").document(tracker_id)
+    if not tracker.get().exists:
+        return "Tracker not in database"
     tracker.set(tracker_data)
+    if tracker.get().to_dict()["tracker"] == "energy":
+        tracker.update({"emissions": Units.powerToCarbon(int(tracker.get().to_dict()["value"]))})
+    elif tracker.get().to_dict()["tracker"] == "water":
+        tracker.update({"emissions": Units.waterToCarbon(int(tracker.get().to_dict()["value"]))})
+    elif tracker.get().to_dict()["tracker"] == "fuel":
+        tracker.update({"emissions": Units.fuelToCarbon(int(tracker.get().to_dict()["value"]), db_userdata.db_user_get(db, user_id)["fuel_type"], db_userdata.db_user_get(db, user_id)["fuel_consumption"])})
     return "valid"
 
 
@@ -37,7 +48,15 @@ def db_tracker_add(db, user_id: str, tracker_data: str):
         return "User not in database"
     tracker_number = user_trackers.get().to_dict()["TrackerNumber"]
     user_trackers.update({"TrackerNumber": tracker_number + 1})
-    user_trackers.collection("Trackers").document(str(tracker_number)).set(tracker_data)
+    tracker = user_trackers.collection("Trackers").document(str(tracker_number))
+    tracker.set(tracker_data)
+    
+    if tracker.get().to_dict()["tracker"] == "energy":
+        tracker.update({"emissions": Units.powerToCarbon(int(tracker.get().to_dict()["value"]))})
+    elif tracker.get().to_dict()["tracker"] == "water":
+        tracker.update({"emissions": Units.waterToCarbon(int(tracker.get().to_dict()["value"]))})
+    elif tracker.get().to_dict()["tracker"] == "fuel":
+        tracker.update({"emissions": Units.fuelToCarbon(int(tracker.get().to_dict()["value"]), db_userdata.db_user_get(db, user_id)["FuelType"], db_userdata.db_user_get(db, user_id)["FuelConsumption"])})
     return "valid"
 
 

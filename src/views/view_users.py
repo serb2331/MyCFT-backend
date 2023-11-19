@@ -7,8 +7,7 @@ users = flask.Blueprint('views/users', __name__, url_prefix = '/users')
 @users.route('/<string:user_id>', methods = ['POST'])
 def post_user(user_id: str):
     user_data = flask.request.get_json()
-    api_users.post_user(user_id, user_data)
-    return "valid"
+    return api_users.post_user(user_id, user_data)
 
 @users.route('/<string:user_id>', methods = ['GET'])
 def get_user(user_id: str):
@@ -17,10 +16,8 @@ def get_user(user_id: str):
 @users.route('/<string:user_id>', methods = ['PUT'])
 def put_user(user_id: str):
     user_data = flask.request.get_json()
-    api_users.put_user(user_id, user_data)
-    return "valid"
+    return api_users.put_user(user_id, user_data)
 
 @users.route('/<string:user_id>', methods = ['DELETE'])
 def delete_user(user_id: str):
-    api_users.delete_user(user_id)
-    return "valid"
+    return api_users.delete_user(user_id)

@@ -71,10 +71,12 @@ def db_tracker_delete(db, user_id: str, tracker_id: str):
     tracker_number = user_trackers.get().to_dict()["TrackerNumber"]
     user_trackers.update({"TrackerNumber": tracker_number - 1})
     
-    for index in range(tracker_number - 1):
+    for index in range(int(tracker_id), tracker_number - 1):
+        print(index)
         tracker = user_trackers.collection("Trackers").document(str(index))
+        print(tracker.get().to_dict())
         if not tracker.get().exists:
-            tracker_data = user_trackers.collection("Trackers").document(str(index + 1)).get()
+            tracker_data = user_trackers.collection("Trackers").document(str(index + 1)).get().to_dict()
             user_trackers.collection("Trackers").document(str(index + 1)).delete()
             user_trackers.collection("Trackers").document(str(index)).set(tracker_data)
     
@@ -102,5 +104,4 @@ def db_user_delete(db, user_id: str):
 def db_tracker_user_get(db, user_id: str):
     if not db.collection("UserTrackers").document(user_id).get().exists:
         return "User not in database"
-    db.collection("UserTrackers").document(user_id).get().to_dict()
-    return "valid"
+    return db.collection("UserTrackers").document(user_id).get().to_dict()

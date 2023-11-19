@@ -9,3 +9,9 @@ def initialize_database():
     db = firestore.client()
 
     return db
+
+
+database = initialize_database()
+
+def get_database():
+    return database

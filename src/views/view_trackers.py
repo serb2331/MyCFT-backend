@@ -4,20 +4,20 @@ from api import api_trackers
 
 trackers = flask.Blueprint('views/trackers', __name__, url_prefix = '/trackers')
 
-@trackers.route('/<string:id>', methods = ['POST'])
+@trackers.route('/<string:user_id>', methods = ['POST'])
 def post_tracker(user_id: str):
     tracker_data = flask.request.get_json()
     api_trackers.post_tracker(user_id, tracker_data)
 
-@trackers.route('/<string:id>', methods = ['GET'])
+@trackers.route('/<string:user_id>-<string:tracker_id>', methods = ['GET'])
 def get_tracker(user_id: str, tracker_id: str):
     return api_trackers.get_tracker(user_id, tracker_id)
     
-@trackers.route('/<string:id>', methods = ['PUT'])
+@trackers.route('/<string:user_id>-<string:tracker_id>', methods = ['PUT'])
 def put_tracker(user_id: str, tracker_id: str):
     tracker_data = flask.request.get_json()
     api_trackers.put_tracker(user_id, tracker_id, tracker_data)
     
-@trackers.route('/<string:id>', methods = ['DELETE'])
+@trackers.route('/<string:user_id>-<string:tracker_id>', methods = ['DELETE'])
 def delete_tracker(user_id: str, tracker_id: str):
     api_trackers.delete_tracker(user_id, tracker_id)

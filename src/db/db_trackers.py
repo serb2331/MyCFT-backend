@@ -1,5 +1,3 @@
-import json
-from firebase_admin import firestore
 
 empty_user_data = {'TrackerNumber': 0}
 

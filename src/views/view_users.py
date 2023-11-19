@@ -1,6 +1,5 @@
 import json
 import flask
-from flask import request
 from api import api_users
 
 users = flask.Blueprint('views/users', __name__, url_prefix = '/users')

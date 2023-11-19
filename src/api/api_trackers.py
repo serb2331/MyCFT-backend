@@ -1,7 +1,6 @@
-from db import db_trackers
-import app
+from db import db_trackers, database
 
-database = app.get_database() 
+database = database.get_database() 
 
 def post_tracker(user_id: str, tracker_data):
     db_trackers.db_tracker_add(database, user_id, tracker_data)

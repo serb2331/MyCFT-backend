@@ -1,4 +1,3 @@
-import json
 from db import db_trackers
 
 def db_user_get(db, user_id: str):

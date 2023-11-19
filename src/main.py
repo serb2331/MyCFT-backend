@@ -9,5 +9,5 @@ app.register_blueprint(view_users.users)
 
 database = db_firestore.initialize_database()
 
-print(db_trackers.db_user_delete(database, "empty"))
-
+db_trackers.db_tracker_add(database, "1", {"a": "a"})
+db_userauth.db_user_delete(database, "1")

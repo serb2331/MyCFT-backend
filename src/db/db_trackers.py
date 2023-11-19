@@ -46,12 +46,19 @@ def db_tracker_delete(db, user_id: str, tracker_id: str):
             user_trackers.collection("Trackers").document(str(index)).set(tracker_data)
 
 
-def db_user_set(db, user_id: str, user_data):
+def db_user_init(db, user_id: str):
     db.collection("UserTrackers").document(user_id).set(empty_user_data)
+    db.collection("UserTrackers").document(user_id).collection("Trackers").document("temp").set({"temp": "temp"})
+    db.collection("UserTrackers").document(user_id).collection("Trackers").document("temp").delete()
 
 
-def db_user_delete(db, user_id):
+def db_user_delete(db, user_id: str):
+    user_tracker = db.collection("UserTrackers").document(user_id)
+    for index in range(user_tracker.get().to_dict()["TrackerNumber"]):
+        user_tracker.collection("Trackers").document(str(index)).delete()
+    
     db.collection("UserTrackers").document(user_id).delete()
+    
 
 
 def db_user_get(db, user_id: str):

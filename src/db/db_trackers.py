@@ -14,25 +14,36 @@ def db_tracker_get(db, user_id: str, tracker_id: str):
     if tracker_data.exists:
         return tracker_data.to_dict()
     else:
-        return "ERROR"
+        return "User not in database"
 
 
 def db_tracker_set(db, user_id: str, tracker_id: str,  tracker_data):
     user_trackers = db.collection("UserTrackers").document(user_id)
+    if not user_trackers.get().exists:
+        return "User not in database"
     tracker = user_trackers.collection("Trackers").document(tracker_id)
-    return tracker.set(tracker_data)
+    tracker.set(tracker_data)
+    return "valid"
 
 
 def db_tracker_add(db, user_id: str, tracker_data: str):
     user_trackers = db.collection("UserTrackers").document(user_id)
+    if not user_trackers.get().exists:
+        return "User not in database"
     tracker_number = user_trackers.get().to_dict()["TrackerNumber"]
     user_trackers.update({"TrackerNumber": tracker_number + 1})
-    return user_trackers.collection("Trackers").document(str(tracker_number)).set(tracker_data)
+    user_trackers.collection("Trackers").document(str(tracker_number)).set(tracker_data)
+    return "valid"
 
 
 def db_tracker_delete(db, user_id: str, tracker_id: str):
     user_trackers = db.collection("UserTrackers").document(user_id)
-    user_trackers.collection("Trackers").document(tracker_id).delete()
+    if not user_trackers.get().exists:
+        return "User not in database"
+    tracker = user_trackers.collection("Trackers").document(tracker_id)
+    if not tracker.get().exists:
+        return "Tracker not in database"
+    tracker.delete()
     tracker_number = user_trackers.get().to_dict()["TrackerNumber"]
     user_trackers.update({"TrackerNumber": tracker_number - 1})
     
@@ -40,7 +51,7 @@ def db_tracker_delete(db, user_id: str, tracker_id: str):
         tracker = user_trackers.collection("Trackers").document(str(index))
         if not tracker.get().exists:
             tracker_data = user_trackers.collection("Trackers").document(str(index + 1)).get()
-            user_trackers.collection("Trackers").document(str(index + 1)).detele()
+            user_trackers.collection("Trackers").document(str(index + 1)).delete()
             user_trackers.collection("Trackers").document(str(index)).set(tracker_data)
     
     return "valid"
@@ -49,16 +60,23 @@ def db_tracker_delete(db, user_id: str, tracker_id: str):
 def db_user_init(db, user_id: str):
     db.collection("UserTrackers").document(user_id).set(empty_user_data)
     db.collection("UserTrackers").document(user_id).collection("Trackers").document("temp").set({"temp": "temp"})
-    return db.collection("UserTrackers").document(user_id).collection("Trackers").document("temp").delete()
+    db.collection("UserTrackers").document(user_id).collection("Trackers").document("temp").delete()
+    return "valid"
 
 
 def db_user_delete(db, user_id: str):
-    user_tracker = db.collection("UserTrackers").document(user_id)
-    for index in range(user_tracker.get().to_dict()["TrackerNumber"]):
-        user_tracker.collection("Trackers").document(str(index)).delete()
+    user_trackers = db.collection("UserTrackers").document(user_id)
+    if not user_trackers.get().exists:
+        return "User not in database"
+    for index in range(user_trackers.get().to_dict()["TrackerNumber"]):
+        user_trackers.collection("Trackers").document(str(index)).delete()
     
-    return db.collection("UserTrackers").document(user_id).delete()
+    db.collection("UserTrackers").document(user_id).delete()
+    return "valid"
     
 
 def db_user_get(db, user_id: str):
-    return db.collection("UserTrackers").document(user_id).get().to_dict()
+    if not db.collection("UserTrackers").document(user_id).get().exists:
+        return "User not in database"
+    db.collection("UserTrackers").document(user_id).get().to_dict()
+    return "valid"

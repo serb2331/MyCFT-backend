@@ -4,7 +4,7 @@ from firebase_admin import credentials
 import json
 
 
-cred = credentials.Certificate("/home/serb/HERMESHACKATHON/MyCFT-backend/mycft-c681e-firebase-adminsdk-5ekv3-f78850f623.json")
+cred = credentials.Certificate("/home/serb/HERMESHACKATHON/MyCFT-backend/mycft-c681e-firebase-adminsdk-5ekv3-f78850f623.json")#inlocuit cu locatia mea
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()

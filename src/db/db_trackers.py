@@ -3,6 +3,8 @@ empty_user_data = {'TrackerNumber': 0}
 
 def db_tracker_get_all(db, user_id: str):
     user_trackers = db.collection("UserTrackers").document(user_id)
+    if not user_trackers.get().exists:
+        return "User not in database"
     return_array = []
     for tracker in user_trackers.collection("Trackers").stream():
         return_array.append(tracker.to_dict())
@@ -10,9 +12,12 @@ def db_tracker_get_all(db, user_id: str):
 
 def db_tracker_get(db, user_id: str, tracker_id: str):
     user_trackers = db.collection("UserTrackers").document(user_id)
-    tracker_data = user_trackers.collection("Trackers").document(tracker_id).get()
-    if tracker_data.exists:
-        return tracker_data.to_dict()
+    if not user_trackers.get().exists:
+        return "User not in database"
+    tracker = user_trackers.collection("Trackers").document(tracker_id)
+    
+    if tracker.get().exists:
+        return tracker.get().to_dict()
     else:
         return "User not in database"
 
@@ -75,7 +80,7 @@ def db_user_delete(db, user_id: str):
     return "valid"
     
 
-def db_user_get(db, user_id: str):
+def db_tracker_user_get(db, user_id: str):
     if not db.collection("UserTrackers").document(user_id).get().exists:
         return "User not in database"
     db.collection("UserTrackers").document(user_id).get().to_dict()
